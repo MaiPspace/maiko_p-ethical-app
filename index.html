@@ -3,63 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>気づかずエシカル</title>
-    <!-- プレミアムなタイポグラフィの導入: Lora & Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <title>ETHOS | 気づかずエシカル</title>
+    <!-- プレミアム・タイポグラフィ -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div id="app">
-        <!-- ヒーローセクション: 思わず引き込まれる導入文 -->
-        <header class="hero-section">
-            <h1 class="brand-title">気づかずエシカル</h1>
-            <p class="brand-message">
-                エシカルとは、世界を思いやる選択のこと。<br>
-                例えば「戦争のない平和な世界」を願っていても、日々の買い物がそこにどう繋がっているかを見極めるのは簡単ではありません。<br>
-                <span>あなたの純粋な願いと消費活動を自然に結びつけ、<br>気づかないうちに心地よい選択ができるようサポートします。</span>
-            </p>
-        </header>
+        <!-- サイドバー: アプリとしての品格 -->
+        <aside class="sidebar">
+            <h1 class="brand-logo">ETHOS</h1>
+            <nav>
+                <ul class="nav-list">
+                    <li class="nav-item active">買い物リスト作成</li>
+                    <li class="nav-item">エシカル・ブランド</li>
+                    <li class="nav-item">世界の課題を知る</li>
+                    <li class="nav-item">マイページ</li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <p class="brand-message">
+                    <span>Peaceful Consumption.</span>
+                    あなたの消費が、世界の誰かを救う。
+                </p>
+            </div>
+        </aside>
 
-        <main class="main-content">
-            <!-- 選択画面: 凝縮されたインプットUI -->
-            <section id="screen-selection" class="screen active">
-                <div class="card-ui">
-                    <div class="section-header">
-                        <span class="step-badge">STEP 01</span>
-                        <h2 class="section-title">ライフスタイル</h2>
-                    </div>
+        <!-- メインレイアウト -->
+        <main class="main-layout">
+            <!-- 選択画面 -->
+            <div id="screen-selection" class="screen active">
+                <header class="section-header">
+                    <h2 class="header-title">Ethical Curation</h2>
+                    <p class="header-desc">
+                        世界の戦争や不当な労働。それらと自分の消費が繋がっていることに気づき、
+                        自然と解決できる。そんな「気づかない」優しさを。
+                    </p>
+                </header>
+
+                <section class="card-ui">
+                    <h3 class="section-title">Lifestyle</h3>
                     <div id="lifestyle-options" class="options-grid"></div>
-                </div>
+                </section>
 
-                <div class="card-ui">
-                    <div class="section-header">
-                        <span class="step-badge">STEP 02</span>
-                        <h2 class="section-title">趣味・好きなこと</h2>
-                    </div>
+                <section class="card-ui">
+                    <h3 class="section-title">Hobbies</h3>
                     <div id="hobby-options" class="tag-cloud"></div>
-                </div>
+                </section>
 
-                <div class="card-ui">
-                    <div class="section-header">
-                        <span class="step-badge">STEP 03</span>
-                        <h2 class="section-title">大切にしたい価値観</h2>
-                    </div>
-                    <div id="ethical-sensitivity-sliders" class="sensitivity-container"></div>
-                </div>
+                <section class="card-ui">
+                    <h3 class="section-title">Sensitivity</h3>
+                    <div id="ethical-sensitivity-sliders"></div>
+                </section>
 
                 <div class="sticky-action">
-                    <button id="btn-generate" class="btn-primary">エシカルリストを生成する</button>
+                    <button id="btn-generate" class="btn-primary">GENERATE LIST</button>
                 </div>
-            </section>
+            </div>
 
             <!-- 結果画面 -->
-            <section id="screen-result" class="screen">
-                <div class="section-header">
-                    <h2 class="section-title">あなただけの買い物リスト</h2>
-                </div>
-                <div id="result-container" class="results-grid"></div>
-                <button id="btn-restart" class="btn-secondary">選択し直す</button>
-            </section>
+            <div id="screen-result" class="screen">
+                <header class="section-header">
+                    <h2 class="header-title">Your List</h2>
+                    <button id="btn-restart" class="nav-item" style="border:none;background:none;">← 選択に戻る</button>
+                </header>
+                <div id="result-container"></div>
+            </div>
         </main>
     </div>
 
