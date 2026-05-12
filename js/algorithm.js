@@ -1,21 +1,37 @@
 /**
- * 気づかずエシカル - AIマッチングアルゴリズム (V2.5: 全網羅版)
+ * 気づかずエシカル - AI推論マッチングアルゴリズム (V2.9: コア & パーソナライズ)
  */
 
 function generateEthicalList(selectedLifestyleIds, selectedHobbyNames, sensitivity) {
-    // ユーザーの選択に関わらず、まずは全てのカテゴリーと商品を含むリストを作成
-    // (これが「家中の買い物をすべてエシカルに」というコンセプトの核となります)
     let groupedResults = {};
+    let targetCategories = new Set();
 
-    for (let category in FULL_SHOPPING_LIST) {
-        groupedResults[category] = FULL_SHOPPING_LIST[category].map(item => {
-            // ここで将来的に感度やライフスタイルに基づいた優先順位付けや強調が可能
-            return {
+    // 1. 【コア必需品】は常にターゲットに含める
+    targetCategories.add("キッチン（基本・必需品）");
+    targetCategories.add("サニタリー（基本・消耗品）");
+
+    // 2. 【ライフスタイル】からのAI推論マッピング
+    selectedLifestyleIds.forEach(id => {
+        const cats = MATCH_LOGIC.lifestyles[id] || [];
+        cats.forEach(cat => targetCategories.add(cat));
+    });
+
+    // 3. 【趣味】からのAI推論マッピング
+    selectedHobbyNames.forEach(hobby => {
+        const cats = MATCH_LOGIC.hobbies[hobby] || [];
+        cats.forEach(cat => targetCategories.add(cat));
+    });
+
+    // 4. マッピングされたカテゴリーの商品を収集
+    targetCategories.forEach(category => {
+        const products = PRODUCT_DATABASE[category];
+        if (products) {
+            groupedResults[category] = products.map(item => ({
                 ...item,
                 displayCategory: category
-            };
-        });
-    }
+            }));
+        }
+    });
 
     return groupedResults;
 }
