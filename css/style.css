@@ -1,0 +1,230 @@
+:root {
+    --primary-color: #2d5a27;
+    --secondary-color: #1a3317;
+    --accent-color: #8dbb69;
+    --bg-color: #f4f7f2;
+    --text-color: #2c3e2d;
+    --white: #ffffff;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+#app {
+    max-width: 600px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.screen {
+    display: none;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.content {
+    text-align: center;
+    padding-top: 40px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.tagline {
+    font-weight: 500;
+    color: var(--secondary-color);
+    margin-bottom: 30px;
+}
+
+.philosophy-card {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    margin-bottom: 40px;
+    font-size: 0.95rem;
+    border-left: 5px solid var(--primary-color);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 15px 40px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    transform: scale(1.02);
+}
+
+.btn-secondary {
+    background: none;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 12px 30px;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/* 選択肢グリッド */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.option-card {
+    background: var(--white);
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid transparent;
+}
+
+.option-card.selected {
+    border-color: var(--primary-color);
+    background-color: #e9f5e8;
+}
+
+/* 趣味タグ */
+.tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.tag {
+    background: var(--white);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    border: 1px solid #ddd;
+}
+
+.tag.selected {
+    background-color: var(--accent-color);
+    color: var(--white);
+    border-color: var(--accent-color);
+}
+
+/* スライダー */
+.slider-container {
+    padding: 20px 0;
+}
+
+input[type="range"] {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.level-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.level-desc {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+/* 結果表示 */
+.result-list {
+    text-align: left;
+    margin-top: 30px;
+}
+
+.category-group {
+    margin-bottom: 25px;
+}
+
+.category-title {
+    font-weight: 700;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--accent-color);
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+}
+
+.product-item {
+    background: var(--white);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.product-name {
+    font-weight: 700;
+}
+
+.company-badges {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.badge.white { background-color: #8dbb69; color: white; }
+.badge.alt { background-color: #666; color: white; }
+.badge.warn { background-color: #e67e22; color: white; }
+
+.ai-label {
+    font-size: 0.7rem;
+    color: #999;
+    font-style: italic;
+    margin-left: 10px;
+}
