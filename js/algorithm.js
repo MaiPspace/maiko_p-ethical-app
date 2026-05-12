@@ -1,5 +1,5 @@
 /**
- * 気づかずエシカル - リスト生成アルゴリズム
+ * 気づかずエシカル - リスト生成アルゴリズム (修正版)
  */
 
 function generateEthicalList(selectedLifestyleIds, selectedHobbyNames, ethicalLevel) {
@@ -7,19 +7,19 @@ function generateEthicalList(selectedLifestyleIds, selectedHobbyNames, ethicalLe
 
     // ステップ1: 必需品自動追加
     REQUIRED_PRODUCTS.forEach(p => {
-        resultList.push({ name: p, category: "必需品", companies: matchCompanies(p, ethicalLevel) });
+        resultList.push({ name: p, category: "必需品", companies: matchCompanies(p, "必需品", ethicalLevel) });
     });
 
     // ステップ2: 選択ライフスタイルから物品抽出
     selectedLifestyleIds.forEach(id => {
         const products = LIFESTYLE_PRODUCT_MAP[id] || [];
-        const name = LIFESTYLES.find(l => l.id === id).name;
+        const lsName = LIFESTYLES.find(l => l.id === id).name;
         products.forEach(p => {
-            resultList.push({ name: p, category: `ライフスタイル (${name})`, companies: matchCompanies(p, ethicalLevel) });
+            resultList.push({ name: p, category: `ライフスタイル (${lsName})`, companies: matchCompanies(p, lsName, ethicalLevel) });
         });
     });
 
-    // ステップ3: 非選択ライフスタイルから逆算判定 (AI判定ロジック)
+    // ステップ3: 非選択ライフスタイルから逆算判定
     const allIds = LIFESTYLES.map(l => l.id);
     const notSelectedIds = allIds.filter(id => !selectedLifestyleIds.includes(id));
     
@@ -30,7 +30,7 @@ function generateEthicalList(selectedLifestyleIds, selectedHobbyNames, ethicalLe
                 resultList.push({ 
                     name: p, 
                     category: `AI逆算判定 (${data.reason})`, 
-                    companies: matchCompanies(p, ethicalLevel),
+                    companies: matchCompanies(p, data.reason, ethicalLevel),
                     isAI: true
                 });
             });
@@ -41,7 +41,7 @@ function generateEthicalList(selectedLifestyleIds, selectedHobbyNames, ethicalLe
     selectedHobbyNames.forEach(name => {
         const products = HOBBY_PRODUCT_MAP[name] || [`${name}関連用品`];
         products.forEach(p => {
-            resultList.push({ name: p, category: `趣味 (${name})`, companies: matchCompanies(p, ethicalLevel) });
+            resultList.push({ name: p, category: `趣味 (${name})`, companies: matchCompanies(p, name, ethicalLevel) });
         });
     });
 
@@ -49,40 +49,60 @@ function generateEthicalList(selectedLifestyleIds, selectedHobbyNames, ethicalLe
 }
 
 /**
- * 企業マッチングロジック
+ * 企業マッチングロジック (強化版)
  */
-function matchCompanies(productName, level) {
-    // 実際には物品名と企業の関連付けが必要だが、MVPではカテゴリ（コーヒー、スポーツ等）で簡易マッチング
+function matchCompanies(productName, categoryOrTag, level) {
     let matches = [];
+    const lowerName = productName.toLowerCase();
+    const lowerTag = categoryOrTag.toLowerCase();
 
-    if (productName.includes("コーヒー") || productName.includes("必需品")) {
-        matches = COMPANIES.filter(c => c.name === "UCC" || c.name === "キーコーヒー" || c.name === "コメダ珈琲" || c.name === "スターバックス");
-    } else if (productName.includes("スポーツ") || productName.includes("ワックス") || productName.includes("プロテイン")) {
-        matches = COMPANIES.filter(c => c.name === "アシックス" || c.name === "ミズノ" || c.name === "PUMA" || c.name === "アディダス");
-    } else if (productName.includes("外食") || productName.includes("レトルト")) {
-        matches = COMPANIES.filter(c => c.name === "モスバーガー" || c.name === "ロッテリア" || c.name === "マクドナルド");
-    } else if (productName.includes("ソーダ")) {
-        matches = COMPANIES.filter(c => c.name === "ドリンクメイト" || c.name === "ソーダストリーム");
+    // コーヒー関連
+    if (lowerName.includes("コーヒー") || lowerName.includes("珈琲")) {
+        matches = COMPANIES.filter(c => ["UCC", "キーコーヒー", "コメダ珈琲", "上島珈琲店", "スターバックス"].includes(c.name));
+    } 
+    // スポーツ・靴関連
+    else if (lowerName.includes("スポーツ") || lowerTag.includes("スポーツ") || lowerName.includes("靴") || lowerName.includes("プロテイン")) {
+        matches = COMPANIES.filter(c => ["アシックス", "ミズノ", "PUMA", "アディダス", "ナイキ"].includes(c.name));
+    }
+    // 飲食・ファストフード関連
+    else if (lowerTag.includes("外食") || lowerName.includes("バーガー") || lowerName.includes("レトルト")) {
+        matches = COMPANIES.filter(c => ["モスバーガー", "ロッテリア", "マクドナルド"].includes(c.name));
+    }
+    // デジタル・家電関連
+    else if (lowerName.includes("pc") || lowerName.includes("モバイル") || lowerName.includes("スマホ")) {
+        matches = COMPANIES.filter(c => ["Apple", "HP", "Dell", "Microsoft", "NTTデータ"].includes(c.name));
+    }
+    // 炭酸水メーカー
+    else if (lowerName.includes("ソーダ")) {
+        matches = COMPANIES.filter(c => ["ドリンクメイト", "ソーダストリーム"].includes(c.name));
+    }
+    // その他（必需品など）への汎用マッチング
+    else {
+        // 全員に推奨できるホワイトリスト企業を表示
+        matches = COMPANIES.filter(c => c.score >= 3 && (c.type === "推奨" || c.name === "NTTデータ"));
     }
 
-    // 重視度レベルに応じたフィルタリング
     return filterByLevel(matches, level);
 }
 
 function filterByLevel(companies, level) {
     const lvl = parseInt(level);
-    switch (lvl) {
-        case 1: // 最小: ホワイトのみ
-            return companies.filter(c => c.score >= 3);
-        case 2: // 推奨優先
-            return companies.sort((a, b) => b.score - a.score);
-        case 3: // デフォルト: ホワイト+代替案
-            return companies.filter(c => c.score >= 2); // スコア2以上
-        case 4: // 全企業提示
-            return companies;
-        case 5: // スコア無視
-            return companies;
-        default:
-            return companies;
+    if (lvl === 5) return companies; // スコア無視全表示
+
+    let filtered = [...companies];
+    
+    if (lvl === 1) {
+        filtered = filtered.filter(c => c.score >= 3);
+    } else if (lvl === 2) {
+        // ボイコット企業も表示するが、ソートで下位へ
+        filtered.sort((a, b) => b.score - a.score);
+    } else if (lvl === 3) {
+        // 標準: ボイコットを避け、推奨と代替案を表示
+        filtered = filtered.filter(c => c.score >= 2);
+        filtered.sort((a, b) => b.score - a.score);
+    } else if (lvl === 4) {
+        filtered.sort((a, b) => b.score - a.score);
     }
+
+    return filtered;
 }

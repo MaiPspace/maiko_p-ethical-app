@@ -3,82 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>気づかずエシカル | 日常にエシカルな選択肢を</title>
+    <title>気づかずエシカル | エシカルな買い物リストを瞬時に生成</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
-        <!-- 画面1: ウェルカム -->
-        <section id="screen-welcome" class="screen active">
-            <div class="content">
-                <h1>気づかずエシカル</h1>
-                <p class="tagline">調べる手間をなくし、あなたの日常にエシカルな選択肢を。</p>
-                <div class="philosophy-card">
-                    <p>「良いことをしたいけれど、調べるのが大変で諦めてしまう」<br>そんな痛みを、このツールが解決します。</p>
-                </div>
-                <button id="btn-start" class="btn-primary">診断を始める</button>
+        <!-- いきなり選択画面からスタート -->
+        <section id="screen-selection" class="screen active">
+            <div class="hero-header">
+                日常に心地よい選択肢を
             </div>
-        </section>
+            
+            <div class="selection-container">
+                <h2>あなたのライフスタイル</h2>
+                <div id="lifestyle-options" class="options-grid"></div>
 
-        <!-- 画面2: ライフスタイル選択 -->
-        <section id="screen-lifestyle" class="screen">
-            <div class="content">
-                <h2>あなたのライフスタイルは？</h2>
-                <p class="subtitle">あてはまるものをすべて選択してください</p>
-                <div id="lifestyle-options" class="options-grid">
-                    <!-- JSで挿入 -->
-                </div>
-                <div class="nav-btns">
-                    <button id="btn-to-hobbies" class="btn-primary">次へ進む</button>
-                </div>
-            </div>
-        </section>
+                <h2 style="margin-top: 40px;">気になる趣味タグ</h2>
+                <div id="hobby-options" class="tag-cloud"></div>
 
-        <!-- 画面3: 趣味・重視度選択 -->
-        <section id="screen-hobbies" class="screen">
-            <div class="content">
-                <h2>気になる趣味や重視度は？</h2>
-                
-                <div class="hobby-section">
-                    <h3>趣味タグを選択</h3>
-                    <div id="hobby-options" class="tag-cloud">
-                        <!-- JSで挿入 -->
+                <h2 style="margin-top: 40px;">エシカル重視度</h2>
+                <div class="slider-wrapper" style="padding: 20px 0;">
+                    <input type="range" id="ethical-level" class="range-slider" min="1" max="5" value="3">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #777; margin-top: 10px;">
+                        <span>効率重視</span>
+                        <span>標準</span>
+                        <span>徹底重視</span>
                     </div>
+                    <p id="level-desc" style="text-align: center; margin-top: 15px; font-weight: 700; color: #2d5a27;"></p>
                 </div>
 
-                <div class="level-section">
-                    <h3>エシカル重視度</h3>
-                    <div class="slider-container">
-                        <input type="range" id="ethical-level" min="1" max="5" value="3">
-                        <div class="level-labels">
-                            <span>最小</span>
-                            <span>標準</span>
-                            <span>最大</span>
-                        </div>
-                        <p id="level-desc" class="level-desc">レベル3: 推奨企業と代替案企業を表示します</p>
-                    </div>
-                </div>
-
-                <div class="nav-btns">
-                    <button id="btn-generate" class="btn-primary">リストを生成する</button>
-                </div>
+                <button id="btn-generate" class="btn-generate">エシカルリストを生成する</button>
             </div>
         </section>
 
-        <!-- 画面4: 買い物リスト表示 -->
+        <!-- 結果表示 -->
         <section id="screen-result" class="screen">
-            <div class="content">
-                <h2>あなたのエシカル買い物リスト</h2>
-                <div id="result-container" class="result-list">
-                    <!-- JSで挿入 -->
-                </div>
-                <div class="nav-btns">
-                    <button id="btn-restart" class="btn-secondary">最初からやり直す</button>
-                </div>
+            <div class="hero-header" style="height: 100px; font-size: 1.2rem;">
+                あなたの買い物リストが完成しました
             </div>
+            <div id="result-container"></div>
+            <button id="btn-restart" class="btn-generate" style="background: #eee; color: #333; margin-top: 40px; box-shadow: none;">最初からやり直す</button>
         </section>
     </div>
 

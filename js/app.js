@@ -1,5 +1,5 @@
 /**
- * 気づかずエシカル - UI制御
+ * 気づかずエシカル - UI制御 (刷新版)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -28,7 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. 趣味タグの生成
     const hobbyContainer = document.getElementById('hobby-options');
-    Object.values(HOBBIES).flat().forEach(hobby => {
+    const allHobbies = Object.values(HOBBIES).flat();
+    allHobbies.forEach(hobby => {
         const span = document.createElement('span');
         span.className = 'tag';
         span.textContent = hobby;
@@ -43,73 +44,63 @@ document.addEventListener('DOMContentLoaded', () => {
         hobbyContainer.appendChild(span);
     });
 
-    // 3. 重視度スライダーの連動
+    // 3. 重視度スライダー
     const slider = document.getElementById('ethical-level');
     const levelDesc = document.getElementById('level-desc');
     const descs = {
-        1: "レベル1: ホワイトリスト企業のみを表示します",
-        2: "レベル2: 推奨企業を優先し、ボイコット企業は警告付きで表示します",
-        3: "レベル3: 推奨企業と代替案企業をバランスよく表示します",
-        4: "レベル4: 全企業を表示しますが、スコア順に提示します",
-        5: "レベル5: 評価を無視してすべての企業を表示します"
+        1: "最小限の推奨企業のみ表示",
+        2: "推奨優先・ボイコット警告あり",
+        3: "推奨と代替案をバランスよく表示",
+        4: "全企業をスコア順に表示",
+        5: "すべての企業を等しく表示"
     };
+    levelDesc.textContent = descs[3];
     slider.oninput = (e) => {
         state.ethicalLevel = e.target.value;
         levelDesc.textContent = descs[state.ethicalLevel];
     };
 
-    // 4. 画面遷移ロジック
-    const navigate = (fromId, toId) => {
-        document.getElementById(fromId).classList.remove('active');
-        document.getElementById(toId).classList.add('active');
-        window.scrollTo(0, 0);
-    };
-
-    document.getElementById('btn-start').onclick = () => navigate('screen-welcome', 'screen-lifestyle');
-    document.getElementById('btn-to-hobbies').onclick = () => navigate('screen-lifestyle', 'screen-hobbies');
-    
+    // 4. 生成ロジックと高速表示の検証
     document.getElementById('btn-generate').onclick = () => {
+        const startTime = performance.now();
+        
+        // 画面切り替え
+        document.getElementById('screen-selection').classList.remove('active');
+        document.getElementById('screen-result').classList.add('active');
+        window.scrollTo(0, 0);
+
+        // リスト生成
         const result = generateEthicalList(state.selectedLifestyles, state.selectedHobbies, state.ethicalLevel);
+        
+        // 即座にレンダリング
         renderResults(result);
-        navigate('screen-hobbies', 'screen-result');
+
+        const endTime = performance.now();
+        console.log(`表示速度: ${endTime - startTime}ms`);
     };
 
     document.getElementById('btn-restart').onclick = () => location.reload();
 
-    // 5. 結果レンダリング
-    const renderResults = (items) => {
+    function renderResults(items) {
         const container = document.getElementById('result-container');
         container.innerHTML = '';
 
-        // カテゴリごとにグループ化
-        const groups = {};
         items.forEach(item => {
-            if (!groups[item.category]) groups[item.category] = [];
-            groups[item.category].push(item);
-        });
-
-        for (const [category, products] of Object.entries(groups)) {
-            const groupDiv = document.createElement('div');
-            groupDiv.className = 'category-group';
-            groupDiv.innerHTML = `<h3 class="category-title">${category}</h3>`;
+            const card = document.createElement('div');
+            card.className = 'result-card';
             
-            products.forEach(p => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'product-item';
-                
-                let companyHtml = '';
-                p.companies.forEach(c => {
-                    const typeClass = c.score >= 3 ? 'white' : (c.score === 1 ? 'warn' : 'alt');
-                    companyHtml += `<span class="badge ${typeClass}">${c.name}${c.reason ? ' (' + c.reason + ')' : ''}</span>`;
-                });
-
-                itemDiv.innerHTML = `
-                    <div class="product-name">${p.name}${p.isAI ? '<span class="ai-label">AI推論</span>' : ''}</div>
-                    <div class="company-badges">${companyHtml || '<span class="badge alt">推奨企業情報を検索中...</span>'}</div>
-                `;
-                groupDiv.appendChild(itemDiv);
+            let badges = '';
+            item.companies.forEach(c => {
+                const badgeClass = c.score >= 3 ? 'badge-white' : 'badge-alt';
+                badges += `<span class="badge ${badgeClass}">${c.name}${c.reason ? ' (' + c.reason + ')' : ''}</span>`;
             });
-            container.appendChild(groupDiv);
-        }
-    };
+
+            card.innerHTML = `
+                <div class="category-label">${item.category}</div>
+                <div class="product-title">${item.name}</div>
+                <div class="company-list">${badges || '<span class="badge badge-alt">推奨企業情報を最適化中...</span>'}</div>
+            `;
+            container.appendChild(card);
+        });
+    }
 });
