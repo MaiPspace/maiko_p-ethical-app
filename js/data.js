@@ -1,8 +1,7 @@
 /**
- * 気づかずエシカル - データベース
+ * 気づかずエシカル - データベース (最終要件準拠)
  */
 
-// 1. ライフスタイル (10個)
 const LIFESTYLES = [
     { id: "car", name: "車をよく使う" },
     { id: "eatout", name: "外食が多い" },
@@ -16,7 +15,6 @@ const LIFESTYLES = [
     { id: "beauty", name: "美容・スキンケアに投資" }
 ];
 
-// 2. 趣味タグ (50個)
 const HOBBIES = {
     "スポーツ": ["キャンプ", "登山", "釣り", "筋トレ", "ヨガ", "ランニング", "自転車", "スノーボード", "サーフィン", "テニス"],
     "飲酒": ["お酒好き"],
@@ -27,81 +25,90 @@ const HOBBIES = {
     "その他": ["旅行", "出張", "温泉", "オーガニック", "健康食", "サプリメント", "瞑想", "マインドフルネス", "アート", "絵画", "音楽", "楽器"]
 };
 
-// 3. 必需品 (17個)
-const REQUIRED_PRODUCTS = [
-    "米", "麺", "パン", "牛乳", "卵", "野菜", "肉", "魚", "調味料", 
-    "トイレットペーパー", "ティッシュ", "シャンプー", "リンス", 
-    "ボディソープ", "歯磨き粉", "洗剤", "柔軟剤"
-];
+const REQUIRED_PRODUCTS = ["米", "麺", "パン", "牛乳", "卵", "野菜", "肉", "魚", "調味料", "トイレットペーパー", "ティッシュ", "シャンプー", "リンス", "ボディソープ", "歯磨き粉", "洗剤", "柔軟剤"];
 
-// 4. ライフスタイル別物品マッピング
 const LIFESTYLE_PRODUCT_MAP = {
-    car: ["車用ワックス", "ワイパー液", "車内消臭剤", "ガソリン添加剤"],
-    eatout: ["口臭ケア用品", "胃腸薬", "携帯用除菌グッズ"],
-    kids: ["子ども用シャンプー", "おむつ", "おしりふき", "ベビーローション"],
-    pets: ["ペットフード", "ペットシーツ", "消臭スプレー"],
-    organic: ["オーガニック調味料", "無添加だし", "スーパーフード"],
-    sports: ["プロテイン", "スポーツドリンク", "制汗剤"],
-    city: ["マスク", "モバイルバッテリー", "イヤホン"],
-    jitan: ["冷凍食品", "レトルト食品", "レンジ調理器具"],
-    outdoor: ["日焼け止め", "虫よけスプレー", "サングラス"],
-    beauty: ["美容液", "パック", "美顔器"]
+    car: ["車用ワックス", "ワイパー液", "車内消臭剤"],
+    eatout: ["口臭ケア用品", "携帯用除菌グッズ"],
+    kids: ["子ども用シャンプー", "おむつ", "ベビーローション"],
+    pets: ["ペットフード", "ペットシーツ"],
+    organic: ["オーガニック調味料", "無添加だし"],
+    sports: ["プロテイン", "スポーツドリンク"],
+    city: ["エコバッグ", "イヤホン"],
+    jitan: ["レトルト食品", "レンジ調理器具"],
+    outdoor: ["日焼け止め", "モバイルバッテリー"],
+    beauty: ["美容液", "パック"]
 };
 
-// 5. 非選択時の逆算ロジックマッピング (AI判定用)
 const INVERSE_LIFESTYLE_MAP = {
-    city: { reason: "郊外/地方（車社会）と判定", products: ["洗車用品", "カーナビ関連小物", "車内収納"] },
-    jitan: { reason: "時間的余裕ありと判定", products: ["本格調理器具", "計量スプーン", "砥石"] },
-    outdoor: { reason: "在宅時間が長いと判定", products: ["加湿器", "ルームフレグランス", "クッション"] },
-    car: { reason: "公共交通機関メインと判定", products: ["パスケース", "折りたたみ傘"] },
-    organic: { reason: "通常食メインと判定", products: ["インスタントラーメン", "スナック菓子"] }
+    city: { reason: "郊外/地方（車社会）", products: ["洗車用品", "ガソリン添加剤"] },
+    jitan: { reason: "時間的余裕あり", products: ["包丁", "まな板", "計量スプーン"] },
+    outdoor: { reason: "在宅時間が長い", products: ["加湿器", "クッション"] },
+    car: { reason: "公共交通機関メイン", products: ["パスケース", "折りたたみ傘"] },
+    organic: { reason: "通常食メイン", products: ["インスタント食品", "カップ麺"] }
 };
 
-// 6. 趣味別物品マッピング (抜粋)
 const HOBBY_PRODUCT_MAP = {
     "キャンプ": ["ランタン", "寝袋"],
-    "登山": ["トレッキングポール", "登山靴"],
-    "料理": ["エプロン", "キッチンタイマー"],
-    "ゲーム": ["コントローラー保護材", "ブルーライトカット眼鏡"],
-    "美容": ["コットン", "ヘアオイル"]
-    // ... 他の趣味もアルゴリズムで汎用的に扱えるようにする
+    "登山": ["登山靴"],
+    "ランニング": ["ランニングシューズ", "スポーツソックス"],
+    "料理": ["エプロン"],
+    "写真": ["三脚", "カメラバッグ"]
 };
 
-// 7. 企業データベース (42社)
 const COMPANIES = [
-    // スコア 1: ボイコット (自動除外)
-    { name: "スターバックス", score: 1, reason: "イスラエル支援企業", alt: "コメダ珈琲, 上島珈琲店" },
-    { name: "マクドナルド", score: 1, reason: "イスラエル軍への無償提供", alt: "モスバーガー, ロッテリア" },
-    { name: "ネスレ", score: 1, reason: "イスラエル支援企業", alt: "UCC, キーコーヒー" },
-    { name: "PUMA", score: 1, reason: "イスラエルサッカー協会スポンサー", alt: "アシックス, ミズノ" },
-    { name: "リーボック", score: 1, reason: "新規スポンサー契約", alt: "アシックス, ミズノ" },
-    { name: "ナイキ", score: 1, reason: "イスラエル支援", alt: "アシックス" },
-    { name: "アディダス", score: 1, reason: "イスラエル支援", alt: "ミズノ" },
-    { name: "HP", score: 1, reason: "占領政策への加担", alt: "Dell, Apple" },
-    { name: "ソーダストリーム", score: 1, reason: "違法入植地で生産", alt: "ドリンクメイト" },
+    // スコア 1: ボイコット (23社)
+    { name: "スターバックス", score: 1, reason: "イスラエル支援" },
+    { name: "マクドナルド", score: 1, reason: "イスラエル軍への提供" },
+    { name: "ネスレ", score: 1, reason: "イスラエル支援" },
+    { name: "PUMA", score: 1, reason: "スポンサー関連" },
+    { name: "リーボック", score: 1, reason: "スポンサー関連" },
+    { name: "ナイキ", score: 1, reason: "イスラエル支援" },
+    { name: "アディダス", score: 1, reason: "イスラエル支援" },
+    { name: "ブッキングドットコム", score: 1, reason: "違法入植地関連" },
+    { name: "Airbnb", score: 1, reason: "違法入植地関連" },
+    { name: "Expedia", score: 1, reason: "違法入植地関連" },
+    { name: "トリップアドバイザー", score: 1, reason: "違法入植地関連" },
+    { name: "AXA", score: 1, reason: "イスラエル支援" },
     { name: "日立建機", score: 1, reason: "軍・警察への供給" },
     { name: "トヨタ自動車", score: 1, reason: "軍・警察への供給" },
     { name: "ソニーグループ", score: 1, reason: "軍・警察への供給" },
     { name: "三菱自動車", score: 1, reason: "軍・警察への供給" },
-    { name: "三菱重工", score: 1, reason: "軍需企業への供給" },
-    { name: "川崎重工", score: 1, reason: "ドローン輸入" },
-    { name: "ファナック", score: 1, reason: "軍需企業への売却" },
-    
-    // スコア 2: BDS 圧力
-    { name: "Google", score: 2, reason: "イスラエル技術提供" },
-    { name: "Amazon", score: 2, reason: "イスラエル技術提供" },
+    { name: "三菱重工", score: 1, reason: "軍需関連" },
+    { name: "川崎重工", score: 1, reason: "ドローン関連" },
+    { name: "ファナック", score: 1, reason: "軍需関連" },
+    { name: "住商エアロシステム", score: 1, reason: "ドローン関連" },
+    { name: "日本エアークラフトサプライ", score: 1, reason: "ドローン関連" },
+    { name: "HP", score: 1, reason: "占領政策加担" },
+    { name: "ソーダストリーム", score: 1, reason: "違法入植地生産" },
+
+    // スコア 2: BDS 圧力 (11社)
+    { name: "マイクロソフト", score: 2, reason: "技術提供" },
+    { name: "インテル", score: 2, reason: "イスラエル支援" },
+    { name: "Google", score: 2, reason: "技術提供" },
     { name: "Apple", score: 2, reason: "イスラエル支援" },
-    { name: "Microsoft", score: 2, reason: "イスラエル技術提供" },
-    { name: "Coca-Cola", score: 2, reason: "イスラエル支援" },
+    { name: "IBM", score: 2, reason: "イスラエル支援" },
+    { name: "Dell", score: 2, reason: "イスラエル支援" },
+    { name: "コカコーラ", score: 2, reason: "イスラエル支援" },
+    { name: "Netflix", score: 2, reason: "イスラエル支援" },
     { name: "Disney", score: 2, reason: "イスラエル支援" },
-    
-    // スコア 3: ホワイト (推奨)
-    { name: "UCC", score: 3, type: "推奨", reason: "フェアトレード認証製品販売" },
-    { name: "キーコーヒー", score: 3, type: "推奨", reason: "フェアトレード認証製品販売" },
-    { name: "コメダ珈琲", score: 3, type: "代替案", reason: "エシカルな選択肢" },
-    { name: "モスバーガー", score: 3, type: "代替案", reason: "エシカルな選択肢" },
-    { name: "アシックス", score: 4, type: "推奨", reason: "国内エシカル推進" },
-    { name: "ミズノ", score: 4, type: "推奨", reason: "国内エシカル推進" },
-    { name: "ドリンクメイト", score: 3, type: "代替案", reason: "エシカルな選択肢" },
-    { name: "NTTデータ", score: 4, type: "推奨", reason: "フェアトレード・ワークプレイス認定" }
+    { name: "Nokia", score: 2, reason: "イスラエル支援" },
+    { name: "Amazon", score: 2, reason: "技術提供" },
+
+    // スコア 3-4: ホワイトリスト (15社)
+    { name: "UCC", score: 3, type: "推奨", reason: "フェアトレード認証" },
+    { name: "キーコーヒー", score: 3, type: "推奨", reason: "フェアトレード認証" },
+    { name: "モンテベッロ", score: 3, type: "推奨", reason: "フェアトレード認証" },
+    { name: "マリンフード", score: 3, type: "推奨", reason: "フェアトレード認証" },
+    { name: "丸福珈琲", score: 3, type: "推奨", reason: "フェアトレード推進" },
+    { name: "NTTデータグループ", score: 4, type: "推奨", reason: "フェアトレード・ワークプレイス" },
+    { name: "フェアトレード・カンパニー", score: 4, type: "推奨", reason: "フェアトレード認証企業" },
+    { name: "コメダ珈琲", score: 3, type: "代替案", reason: "スタバ代替" },
+    { name: "上島珈琲店", score: 3, type: "代替案", reason: "スタバ代替" },
+    { name: "カフェ・ベローチェ", score: 3, type: "代替案", reason: "スタバ代替" },
+    { name: "モスバーガー", score: 3, type: "代替案", reason: "マック代替" },
+    { name: "ロッテリア", score: 3, type: "代替案", reason: "マック代替" },
+    { name: "アシックス", score: 4, type: "代替案", reason: "PUMA代替" },
+    { name: "ミズノ", score: 4, type: "代替案", reason: "PUMA代替" },
+    { name: "ドリンクメイト", score: 3, type: "代替案", reason: "ソーダストリーム代替" }
 ];
