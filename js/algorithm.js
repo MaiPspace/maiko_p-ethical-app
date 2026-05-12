@@ -1,41 +1,21 @@
 /**
- * 気づかずエシカル - AIマッチングアルゴリズム (V2)
+ * 気づかずエシカル - AIマッチングアルゴリズム (V2.5: 全網羅版)
  */
 
 function generateEthicalList(selectedLifestyleIds, selectedHobbyNames, sensitivity) {
-    let resultItems = [];
-    let processedCategories = new Set();
+    // ユーザーの選択に関わらず、まずは全てのカテゴリーと商品を含むリストを作成
+    // (これが「家中の買い物をすべてエシカルに」というコンセプトの核となります)
+    let groupedResults = {};
 
-    // 1. 常に必要な「必需品」カテゴリをAIが抽出
-    const baseCategories = ["お米", "必需品"];
-    baseCategories.forEach(cat => addCategoryToResult(cat, resultItems, processedCategories));
-
-    // 2. ライフスタイルから関連カテゴリを推論
-    selectedLifestyleIds.forEach(id => {
-        const cats = MATCH_MAP[id] || [];
-        cats.forEach(cat => addCategoryToResult(cat, resultItems, processedCategories));
-    });
-
-    // 3. 趣味から関連カテゴリを推論
-    selectedHobbyNames.forEach(name => {
-        const cats = MATCH_MAP[name] || [];
-        cats.forEach(cat => addCategoryToResult(cat, resultItems, processedCategories));
-    });
-
-    return resultItems;
-}
-
-function addCategoryToResult(categoryName, resultItems, processedCategories) {
-    if (processedCategories.has(categoryName)) return;
-    
-    const products = PRODUCT_DATABASE[categoryName];
-    if (products) {
-        products.forEach(p => {
-            resultItems.push({
-                ...p,
-                displayCategory: categoryName
-            });
+    for (let category in FULL_SHOPPING_LIST) {
+        groupedResults[category] = FULL_SHOPPING_LIST[category].map(item => {
+            // ここで将来的に感度やライフスタイルに基づいた優先順位付けや強調が可能
+            return {
+                ...item,
+                displayCategory: category
+            };
         });
-        processedCategories.add(categoryName);
     }
+
+    return groupedResults;
 }

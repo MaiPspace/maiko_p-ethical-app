@@ -1,5 +1,5 @@
 /**
- * 気づかずエシカル - UI制御 (V2)
+ * 気づかずエシカル - メインロジック (V2.5)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lifestyleContainer.appendChild(div);
     });
 
-    // 2. 趣味タグ生成
+    // 2. 趣味生成 (全50項目をフラットに表示)
     const hobbyContainer = document.getElementById('hobby-options');
     Object.values(HOBBIES).flat().forEach(hobby => {
         const span = document.createElement('span');
@@ -65,9 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             valText.textContent = `感度: ${e.target.value}`;
         };
         
-        // 初期状態の保存
         state.sensitivity[cat.id] = 3;
-        
         slidersContainer.appendChild(wrapper);
     });
 
@@ -80,31 +78,51 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo(0, 0);
     };
 
-    document.getElementById('btn-restart').onclick = () => {
-        document.getElementById('screen-result').style.display = 'none';
-        document.getElementById('screen-selection').style.display = 'block';
-    };
-
-    function renderResults(items) {
+    /**
+     * 結果の描画 (V2.5: カテゴリー別カタログ表示)
+     */
+    function renderResults(groupedResults) {
         const container = document.getElementById('result-container');
         container.innerHTML = '';
 
-        items.forEach(item => {
-            const a = document.createElement('a');
-            a.className = 'result-card';
-            a.href = item.url;
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
+        for (let category in groupedResults) {
+            const products = groupedResults[category];
+            if (products.length === 0) continue;
 
-            a.innerHTML = `
-                <div class="product-info">
-                    <span class="product-label">${item.brand}</span>
+            const block = document.createElement('div');
+            block.className = 'category-block';
+            
+            const title = document.createElement('h3');
+            title.className = 'category-title';
+            title.textContent = category;
+            block.appendChild(title);
+
+            const grid = document.createElement('div');
+            grid.className = 'results-grid';
+
+            products.forEach(item => {
+                const card = document.createElement('a');
+                card.href = item.url;
+                card.target = '_blank';
+                card.className = 'result-card';
+                card.innerHTML = `
+                    <div class="product-label">${item.brand}</div>
                     <div class="product-name">${item.name}</div>
                     <div class="ethical-reason">${item.reason}</div>
-                    <div class="buy-badge">商品ページで見る</div>
-                </div>
-            `;
-            container.appendChild(a);
-        });
+                    <div class="buy-badge">SHOP NOW</div>
+                `;
+                grid.appendChild(card);
+            });
+
+            block.appendChild(grid);
+            container.appendChild(block);
+        }
     }
+
+    // 再スタートボタン
+    document.getElementById('btn-restart').onclick = () => {
+        document.getElementById('screen-result').style.display = 'none';
+        document.getElementById('screen-selection').style.display = 'block';
+        window.scrollTo(0, 0);
+    };
 });
