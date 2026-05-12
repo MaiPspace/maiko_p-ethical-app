@@ -1,244 +1,246 @@
 :root {
-    --bg-color: #fdfbfb;
-    --card-bg: #ffffff;
-    --accent-sage: #d4e2d4; /* ソフトなセージグリーン */
-    --accent-hover: #b9ccb9;
-    --text-main: #4a4a4a;
-    --text-muted: #888888;
-    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.03);
-    --border-radius: 24px;
+    --bg-base: #fdfbfb;
+    --accent-sage: #d4e2d4;
+    --accent-deep: #2d5a27;
+    --text-main: #333333;
+    --text-light: #757575;
+    --card-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --radius-lg: 32px;
+    --radius-md: 16px;
+    --font-title: 'Outfit', sans-serif;
+    --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    font-family: 'Inter', 'Noto Sans JP', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-main);
     margin: 0;
-    line-height: 1.6;
+    font-family: var(--font-body);
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    overflow-x: hidden;
 }
 
 #app {
-    max-width: 600px;
+    max-width: 480px; /* モバイルアプリのような凝縮感 */
     margin: 0 auto;
-    padding: 60px 20px;
+    padding: 0 20px 100px;
 }
 
-/* ヒーローセクション */
-.hero-container {
+/* ヒーローセクション: Pinterest的な美学 */
+.hero-section {
+    padding: 60px 0 40px;
     text-align: center;
-    margin-bottom: 60px;
 }
 
-.hero-title {
-    font-size: 2.2rem;
+.brand-title {
+    font-family: var(--font-title);
+    font-size: 2.4rem;
     font-weight: 700;
-    margin-bottom: 15px;
-    color: var(--text-main);
-    letter-spacing: -0.5px;
+    margin: 0 0 10px;
+    background: linear-gradient(135deg, var(--accent-deep), #5c8d56);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
 }
 
-.hero-desc {
-    font-size: 0.95rem;
-    color: var(--text-muted);
-    max-width: 400px;
-    margin: 0 auto;
+.brand-message {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-light);
 }
 
-/* カードスタイル */
-.screen {
-    display: none;
-    animation: fadeIn 0.5s ease;
-}
-
-.screen.active {
+.brand-message span {
     display: block;
+    font-weight: 600;
+    color: var(--accent-deep);
+    margin-top: 5px;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* カードUI */
+.card-ui {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--card-shadow);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.step-badge {
+    font-family: var(--font-title);
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: var(--accent-sage);
+    color: var(--accent-deep);
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-right: 12px;
 }
 
 .section-title {
     font-size: 1.1rem;
     font-weight: 700;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
+    margin: 0;
 }
 
-.section-title::before {
-    content: '';
-    display: inline-block;
-    width: 4px;
-    height: 18px;
-    background-color: var(--accent-sage);
-    margin-right: 12px;
-    border-radius: 2px;
-}
-
-/* オプション・カード (Pinterestエッセンス) */
+/* グリッド & タグ */
 .options-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 40px;
+    gap: 12px;
 }
 
 .option-card {
-    background: var(--card-bg);
-    padding: 24px 16px;
-    border-radius: var(--border-radius);
-    cursor: pointer;
+    background: white;
+    padding: 18px 12px;
+    border-radius: var(--radius-md);
     text-align: center;
-    border: 1px solid #f0f0f0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-soft);
+    font-size: 0.85rem;
     font-weight: 600;
-}
-
-.option-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.06);
-    border-color: var(--accent-sage);
+    cursor: pointer;
+    border: 1px solid #f0f0f0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .option-card.selected {
-    background-color: var(--accent-sage);
+    background: var(--accent-sage);
     border-color: var(--accent-sage);
-    color: #2d5a27;
+    color: var(--accent-deep);
+    transform: scale(0.96);
 }
 
-/* タグクラウド */
 .tag-cloud {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 40px;
+    gap: 8px;
 }
 
 .tag {
-    background: var(--card-bg);
-    padding: 10px 20px;
+    background: white;
+    padding: 8px 16px;
     border-radius: 40px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    font-weight: 500;
     cursor: pointer;
     border: 1px solid #f0f0f0;
-    box-shadow: var(--shadow-soft);
     transition: 0.2s;
 }
 
 .tag.selected {
-    background-color: var(--accent-sage);
-    border-color: var(--accent-sage);
+    background: var(--accent-deep);
+    color: white;
+    border-color: var(--accent-deep);
 }
 
 /* スライダー */
-.slider-container {
-    background: var(--card-bg);
-    padding: 30px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-soft);
-    margin-bottom: 40px;
+.sensitivity-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-input[type="range"] {
+.slider-wrapper {
+    background: #f9faf9;
+    padding: 16px;
+    border-radius: var(--radius-md);
+}
+
+.slider-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.cat-name { font-weight: 700; font-size: 0.9rem; }
+.cat-value { font-size: 0.8rem; color: var(--accent-deep); font-weight: 700; }
+.cat-desc { font-size: 0.75rem; color: var(--text-light); margin: 0 0 12px; }
+
+.range-slider {
     -webkit-appearance: none;
     width: 100%;
-    height: 6px;
-    background: #eee;
-    border-radius: 3px;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
     outline: none;
 }
 
-input[type="range"]::-webkit-slider-thumb {
+.range-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 24px;
-    height: 24px;
-    background: var(--accent-sage);
+    width: 22px;
+    height: 22px;
+    background: white;
+    border: 2px solid var(--accent-sage);
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* 生成ボタン (洗練されたデザイン) */
-.btn-generate {
-    background-color: #333;
+/* アクションボタン */
+.sticky-action {
+    position: fixed;
+    bottom: 30px;
+    left: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.btn-primary {
+    width: 100%;
+    background: var(--accent-deep);
     color: white;
     border: none;
     padding: 20px;
-    border-radius: 50px;
+    border-radius: 40px;
     font-size: 1.1rem;
     font-weight: 700;
-    width: 100%;
     cursor: pointer;
-    transition: all 0.3s;
-    letter-spacing: 1px;
+    box-shadow: 0 10px 30px rgba(45, 90, 39, 0.3);
+    transition: 0.3s;
 }
 
-.btn-generate:hover {
-    background-color: #000;
-    transform: scale(1.01);
+.btn-primary:active { transform: scale(0.98); }
+
+/* 結果リスト */
+.results-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-/* 結果リスト (商品カード) */
 .result-card {
-    background: var(--card-bg);
+    background: white;
     padding: 24px;
-    border-radius: var(--border-radius);
-    margin-bottom: 20px;
-    box-shadow: var(--shadow-soft);
-    border: 1px solid #f9f9f9;
-    text-decoration: none; /* リンク化を想定 */
-    display: block;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
+    text-decoration: none;
     color: inherit;
     transition: 0.3s;
 }
 
-.result-card:hover {
-    transform: translateX(5px);
-    border-color: var(--accent-sage);
-}
+.result-card:hover { transform: translateY(-4px); }
 
-.product-info {
-    display: flex;
-    flex-direction: column;
-}
+.product-label { font-size: 0.7rem; color: var(--text-light); letter-spacing: 1px; }
+.product-name { font-size: 1.2rem; font-weight: 700; margin: 4px 0 10px; }
+.ethical-reason { font-size: 0.8rem; background: #f0f7f0; color: #2d5a27; padding: 8px 12px; border-radius: 12px; display: inline-block; }
+.buy-badge { margin-top: 15px; font-size: 0.8rem; font-weight: 700; color: var(--accent-deep); display: flex; align-items: center; }
+.buy-badge::after { content: '→'; margin-left: 5px; }
 
-.product-label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-}
+.screen { display: none; }
+.screen.active { display: block; animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
 
-.product-name {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-.ethical-reason {
-    font-size: 0.85rem;
-    color: #2d5a27;
-    background: var(--accent-sage);
-    padding: 6px 12px;
-    border-radius: 8px;
-    display: inline-block;
-    align-self: flex-start;
-}
-
-.buy-badge {
-    margin-top: 15px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #888;
-    display: flex;
-    align-items: center;
-}
-
-.buy-badge::after {
-    content: '→';
-    margin-left: 8px;
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }

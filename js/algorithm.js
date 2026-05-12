@@ -2,7 +2,7 @@
  * 気づかずエシカル - AIマッチングアルゴリズム (V2)
  */
 
-function generateEthicalList(selectedLifestyleIds, selectedHobbyNames, ethicalLevel) {
+function generateEthicalList(selectedLifestyleIds, selectedHobbyNames, sensitivity) {
     let resultItems = [];
     let processedCategories = new Set();
 

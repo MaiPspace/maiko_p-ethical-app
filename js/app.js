@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const state = {
         selectedLifestyles: [],
         selectedHobbies: [],
-        ethicalLevel: 3
+        sensitivity: {} // カテゴリーごとの感度 (1-5)
     };
 
     // 1. ライフスタイル生成
@@ -43,25 +43,37 @@ document.addEventListener('DOMContentLoaded', () => {
         hobbyContainer.appendChild(span);
     });
 
-    // 3. スライダー
-    const slider = document.getElementById('ethical-level');
-    const levelDesc = document.getElementById('level-desc');
-    const descs = {
-        1: "最小限の推奨商品のみ",
-        2: "推奨優先・代替案あり",
-        3: "標準的なエシカル選択",
-        4: "徹底したエシカル選択",
-        5: "すべての候補を表示"
-    };
-    levelDesc.textContent = descs[3];
-    slider.oninput = (e) => {
-        state.ethicalLevel = e.target.value;
-        levelDesc.textContent = descs[state.ethicalLevel];
-    };
+    // 3. 価値観の軸 (3カテゴリー) 感度スライダー生成
+    const slidersContainer = document.getElementById('ethical-sensitivity-sliders');
+    ETHICAL_CATEGORIES.forEach(cat => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'slider-wrapper';
+        wrapper.innerHTML = `
+            <div class="slider-label">
+                <span class="cat-name">${cat.name}</span>
+                <span class="cat-value" id="val-${cat.id}">感度: 3</span>
+            </div>
+            <p class="cat-desc">${cat.desc}</p>
+            <input type="range" class="range-slider" min="1" max="5" value="3" id="range-${cat.id}">
+        `;
+        
+        const slider = wrapper.querySelector('input');
+        const valText = wrapper.querySelector('.cat-value');
+        
+        slider.oninput = (e) => {
+            state.sensitivity[cat.id] = parseInt(e.target.value);
+            valText.textContent = `感度: ${e.target.value}`;
+        };
+        
+        // 初期状態の保存
+        state.sensitivity[cat.id] = 3;
+        
+        slidersContainer.appendChild(wrapper);
+    });
 
     // 4. 生成ボタン
     document.getElementById('btn-generate').onclick = () => {
-        const results = generateEthicalList(state.selectedLifestyles, state.selectedHobbies, state.ethicalLevel);
+        const results = generateEthicalList(state.selectedLifestyles, state.selectedHobbies, state.sensitivity);
         renderResults(results);
         document.getElementById('screen-selection').style.display = 'none';
         document.getElementById('screen-result').style.display = 'block';

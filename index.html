@@ -4,47 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>気づかずエシカル</title>
+    <!-- Pinterest的な洗練されたタイポグラフィの導入 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@500;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
-        <header class="hero-container">
-            <h1 class="hero-title">気づかずエシカル</h1>
-            <p class="hero-desc">
+        <!-- ヒーローセクション: 思わず引き込まれる導入文 -->
+        <header class="hero-section">
+            <h1 class="brand-title">気づかずエシカル</h1>
+            <p class="brand-message">
                 「良いことをしたいけれど、調べる手間が大変」という痛みを解決するために。<br>
-                日常の消耗品を、あなたの価値観に合うものへ。
+                <span>日常の消耗品を、あなたの価値観に合うものへ。</span>
             </p>
         </header>
 
-        <main>
-            <!-- 選択画面 -->
+        <main class="main-content">
+            <!-- 選択画面: 凝縮されたインプットUI -->
             <section id="screen-selection" class="screen active">
-                <div class="section-title">ライフスタイルを選択</div>
-                <div id="lifestyle-options" class="options-grid"></div>
-
-                <div class="section-title" style="margin-top: 40px;">趣味・嗜好</div>
-                <div id="hobby-options" class="tag-cloud"></div>
-
-                <div class="section-title" style="margin-top: 40px;">エシカル重視度</div>
-                <div class="slider-container">
-                    <input type="range" id="ethical-level" min="1" max="5" value="3">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #999; margin-top: 15px;">
-                        <span>効率</span>
-                        <span>標準</span>
-                        <span>徹底</span>
+                <div class="card-ui">
+                    <div class="section-header">
+                        <span class="step-badge">STEP 01</span>
+                        <h2 class="section-title">ライフスタイル</h2>
                     </div>
-                    <p id="level-desc" style="text-align: center; margin-top: 15px; font-weight: 700; color: #2d5a27;"></p>
+                    <div id="lifestyle-options" class="options-grid"></div>
                 </div>
 
-                <button id="btn-generate" class="btn-generate">エシカルリストを生成する</button>
+                <div class="card-ui">
+                    <div class="section-header">
+                        <span class="step-badge">STEP 02</span>
+                        <h2 class="section-title">趣味・好きなこと</h2>
+                    </div>
+                    <div id="hobby-options" class="tag-cloud"></div>
+                </div>
+
+                <div class="card-ui">
+                    <div class="section-header">
+                        <span class="step-badge">STEP 03</span>
+                        <h2 class="section-title">大切にしたい価値観</h2>
+                    </div>
+                    <div id="ethical-sensitivity-sliders" class="sensitivity-container"></div>
+                </div>
+
+                <div class="sticky-action">
+                    <button id="btn-generate" class="btn-primary">エシカルリストを生成する</button>
+                </div>
             </section>
 
-            <!-- 結果表示 -->
+            <!-- 結果画面 -->
             <section id="screen-result" class="screen">
-                <div class="section-title">あなたにおすすめの消耗品リスト</div>
-                <div id="result-container"></div>
-                <button id="btn-restart" class="btn-generate" style="background: #f0f0f0; color: #333; margin-top: 40px;">選択し直す</button>
+                <div class="section-header">
+                    <h2 class="section-title">あなただけの買い物リスト</h2>
+                </div>
+                <div id="result-container" class="results-grid"></div>
+                <button id="btn-restart" class="btn-secondary">選択し直す</button>
             </section>
         </main>
     </div>
