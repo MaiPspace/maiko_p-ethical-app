@@ -3,69 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ETHOS | 気づかずエシカル</title>
-    <!-- プレミアム・タイポグラフィ -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <title>ETHOS | Ethical Shopping Selection</title>
+    <!-- 明朝体を排除し、モダンなゴシック体に統一 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div id="app">
-        <!-- サイドバー: アプリとしての品格 -->
-        <aside class="sidebar">
-            <h1 class="brand-logo">ETHOS</h1>
-            <nav>
-                <ul class="nav-list">
-                    <li class="nav-item active">買い物リスト作成</li>
-                    <li class="nav-item">エシカル・ブランド</li>
-                    <li class="nav-item">世界の課題を知る</li>
-                    <li class="nav-item">マイページ</li>
-                </ul>
-            </nav>
-            <div class="sidebar-footer">
-                <p class="brand-message">
-                    <span>Peaceful Consumption.</span>
-                    あなたの消費が、世界の誰かを救う。
-                </p>
-            </div>
-        </aside>
+        <!-- ヒーロー: 大胆なタイポグラフィ -->
+        <header class="hero-section">
+            <h1 class="brand-title">CHOOSE<br>BETTER</h1>
+            <p class="brand-message">
+                <b>気づかずエシカル。</b><br>
+                あなたの選択が、静かに世界を癒していく。<br>
+                もっともモダンで、もっとも優しい買い物リスト。
+            </p>
+        </header>
 
-        <!-- メインレイアウト -->
-        <main class="main-layout">
+        <main>
             <!-- 選択画面 -->
             <div id="screen-selection" class="screen active">
-                <header class="section-header">
-                    <h2 class="header-title">Ethical Curation</h2>
-                    <p class="header-desc">
-                        世界の戦争や不当な労働。それらと自分の消費が繋がっていることに気づき、
-                        自然と解決できる。そんな「気づかない」優しさを。
-                    </p>
-                </header>
-
                 <section class="card-ui">
-                    <h3 class="section-title">Lifestyle</h3>
+                    <h2 class="section-title">LIFESTYLE</h2>
                     <div id="lifestyle-options" class="options-grid"></div>
                 </section>
 
                 <section class="card-ui">
-                    <h3 class="section-title">Hobbies</h3>
+                    <h2 class="section-title">HOBBIES</h2>
                     <div id="hobby-options" class="tag-cloud"></div>
                 </section>
 
                 <section class="card-ui">
-                    <h3 class="section-title">Sensitivity</h3>
+                    <h2 class="section-title">SENSITIVITY</h2>
                     <div id="ethical-sensitivity-sliders"></div>
                 </section>
 
                 <div class="sticky-action">
-                    <button id="btn-generate" class="btn-primary">GENERATE LIST</button>
+                    <button id="btn-generate" class="btn-primary">
+                        <span>VIEW MY CURATION</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
                 </div>
             </div>
 
             <!-- 結果画面 -->
             <div id="screen-result" class="screen">
-                <header class="section-header">
-                    <h2 class="header-title">Your List</h2>
-                    <button id="btn-restart" class="nav-item" style="border:none;background:none;">← 選択に戻る</button>
+                <header class="section-header" style="margin-bottom: 40px;">
+                    <h2 class="section-title">CURATED FOR YOU</h2>
+                    <button id="btn-restart" style="color:var(--color-primary);border:none;background:none;font-weight:900;cursor:pointer;font-size:0.9rem;">← START OVER</button>
                 </header>
                 <div id="result-container"></div>
             </div>
