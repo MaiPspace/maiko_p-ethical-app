@@ -1,12 +1,13 @@
 :root {
-    --bg-base: #f0f7ff;
-    --color-primary: #4f46e5;
-    --color-success: #10b981;
-    --text-main: #1e293b;
-    --text-muted: #64748b;
+    --bg-main: #fcfdfe;
+    --color-primary: #6366f1; /* 洗練されたインディゴ（ネイビーより明るい） */
+    --color-secondary: #8b5cf6; /* ラベンダー */
+    --color-success: #10b981; /* ミント */
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
     --font-main: 'Inter', sans-serif;
-    --radius-sm: 8px; /* 角丸をシャープに */
-    --shadow-sm: 0 4px 12px rgba(79, 70, 229, 0.05);
+    --radius: 20px;
+    --shadow-soft: 0 10px 30px rgba(99, 102, 241, 0.05);
 }
 
 * {
@@ -15,115 +16,126 @@
     padding: 0;
 }
 
-html { scroll-behavior: smooth; }
-
 body {
-    background-color: var(--bg-base);
+    background-color: var(--bg-main);
     color: var(--text-main);
     font-family: var(--font-main);
-    line-height: 1.4;
-    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+    overflow-x: hidden;
 }
 
 #app {
-    max-width: 600px;
+    max-width: 500px;
     margin: 0 auto;
-    padding: 40px 16px 120px;
+    padding: 60px 24px;
 }
 
-/* ヒーロー: よりコンパクトに */
-.hero-section {
-    margin-bottom: 40px;
-}
-
+/* ヒーロー: 清潔感のあるタイポグラフィ */
 .brand-title {
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: 900;
     color: var(--color-primary);
     letter-spacing: -2px;
+    margin-bottom: 16px;
+    line-height: 1;
 }
 
 .brand-message {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: var(--text-muted);
-    margin-top: 8px;
+    margin-bottom: 60px;
 }
 
-/* 高効率・省スペース・カード */
+/* ステップ形式のカードUI */
 .card-ui {
     background: #ffffff;
-    border-radius: 12px;
-    padding: 24px 20px;
-    margin-bottom: 24px;
-    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius);
+    padding: 40px 30px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(99, 102, 241, 0.05);
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .section-title {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 800;
-    color: var(--color-primary);
-    margin-bottom: 16px;
     text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* 高効率チップ・グリッド */
-.options-grid {
+    color: var(--color-primary);
+    letter-spacing: 2px;
+    margin-bottom: 30px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    align-items: center;
 }
 
-.option-card, .tag {
-    background: #f1f5f9;
-    border-radius: 6px;
-    padding: 10px 14px;
-    font-size: 0.8rem;
-    font-weight: 700;
+.section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--color-primary), transparent);
+    margin-left: 20px;
+}
+
+/* 選択肢: 押しやすさと美しさの融合 */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.option-card {
+    background: #f8faff;
+    border-radius: 16px;
+    padding: 24px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    color: var(--text-muted);
+    transition: all 0.3s ease;
     border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.option-card.selected, .tag.selected {
-    background: var(--color-primary);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-    transform: translateY(-1px);
+.option-card:hover {
+    background: #f1f5ff;
 }
 
-/* 趣味のタグも同様にコンパクト化 */
+.option-card.selected {
+    background: #ffffff;
+    border-color: var(--color-primary);
+    box-shadow: 0 15px 30px rgba(99, 102, 241, 0.1);
+    transform: scale(1.02);
+}
+
+.option-card.selected::after {
+    content: "✓";
+    color: var(--color-primary);
+    font-weight: 900;
+}
+
 .tag-cloud {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 10px;
 }
 
-/* スライダー */
-.range-slider {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 4px;
-    background: #e2e8f0;
-    border-radius: 2px;
-}
-
-.range-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    background: var(--color-primary);
-    border-radius: 50%;
+.tag {
+    background: #f8faff;
+    border-radius: 50px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
+    transition: 0.2s;
 }
 
-/* アクションボタン: 常にスリムに */
+.tag.selected {
+    background: var(--color-secondary);
+    color: #ffffff;
+}
+
+/* アクションボタン: 押し心地を重視 */
 .sticky-action {
-    position: fixed;
-    bottom: 24px;
-    left: 16px;
-    right: 16px;
+    margin-top: 40px;
 }
 
 .btn-primary {
@@ -131,32 +143,50 @@ body {
     background: var(--color-primary);
     color: #ffffff;
     border: none;
-    padding: 18px;
-    border-radius: 12px;
-    font-size: 1rem;
+    padding: 22px;
+    border-radius: 16px;
+    font-size: 1.1rem;
     font-weight: 800;
-    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+    cursor: pointer;
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+    transition: 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* 結果表示も効率化 */
+.btn-primary:active {
+    transform: scale(0.96);
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.1);
+}
+
+/* 結果カタログ: 雑誌のような美しさ */
+.category-block { margin-top: 80px; }
+
+.category-title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color-primary);
+    margin-bottom: 30px;
+}
+
 .result-card {
     background: #ffffff;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 12px;
+    border-radius: var(--radius);
+    padding: 30px;
+    margin-bottom: 20px;
     display: block;
     text-decoration: none;
     color: inherit;
-    border: 1px solid #f1f5f9;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(99, 102, 241, 0.05);
 }
 
 .product-name {
-    font-size: 1.1rem;
+    font-size: 1.4rem;
     font-weight: 800;
-    margin-bottom: 4px;
+    margin-bottom: 10px;
+    line-height: 1.2;
 }
 
 .ethical-reason {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: var(--text-muted);
 }
