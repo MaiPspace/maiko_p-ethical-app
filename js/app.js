@@ -1,128 +1,126 @@
 /**
- * 気づかずエシカル - メインロジック (V2.5)
+ * 気づかずエシカル - アプリケーション・コア (V3.9: プレミアム・UX・調整版)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    const state = {
-        selectedLifestyles: [],
-        selectedHobbies: [],
-        sensitivity: {} // カテゴリーごとの感度 (1-5)
-    };
-
-    // 1. ライフスタイル生成
     const lifestyleContainer = document.getElementById('lifestyle-options');
+    const hobbyContainer = document.getElementById('hobby-options');
+    const sensitivityContainer = document.getElementById('ethical-sensitivity-sliders');
+    const btnGenerate = document.getElementById('btn-generate');
+    const btnRestart = document.getElementById('btn-restart');
+    const screenSelection = document.getElementById('screen-selection');
+    const screenResult = document.getElementById('screen-result');
+    const resultContainer = document.getElementById('result-container');
+
+    let selectedLifestyles = new Set();
+    let selectedHobbies = new Set();
+    let sensitivityData = {};
+
+    // 1. ライフスタイル選択（カード型）の描画
     LIFESTYLES.forEach(ls => {
         const div = document.createElement('div');
         div.className = 'option-card';
-        div.textContent = ls.name;
+        div.innerHTML = `<span>${ls.name}</span>`;
         div.onclick = () => {
             div.classList.toggle('selected');
-            if (state.selectedLifestyles.includes(ls.id)) {
-                state.selectedLifestyles = state.selectedLifestyles.filter(id => id !== ls.id);
-            } else {
-                state.selectedLifestyles.push(ls.id);
-            }
+            if (selectedLifestyles.has(ls.id)) selectedLifestyles.delete(ls.id);
+            else selectedLifestyles.add(ls.id);
         };
         lifestyleContainer.appendChild(div);
     });
 
-    // 2. 趣味生成 (全50項目をフラットに表示)
-    const hobbyContainer = document.getElementById('hobby-options');
-    Object.values(HOBBIES).flat().forEach(hobby => {
-        const span = document.createElement('span');
-        span.className = 'tag';
-        span.textContent = hobby;
-        span.onclick = () => {
-            span.classList.toggle('selected');
-            if (state.selectedHobbies.includes(hobby)) {
-                state.selectedHobbies = state.selectedHobbies.filter(h => h !== hobby);
-            } else {
-                state.selectedHobbies.push(hobby);
-            }
-        };
-        hobbyContainer.appendChild(span);
+    // 2. 趣味選択（チップ型）の描画
+    Object.keys(HOBBIES).forEach(cat => {
+        HOBBIES[cat].forEach(hobby => {
+            const span = document.createElement('span');
+            span.className = 'tag';
+            span.textContent = hobby;
+            span.onclick = () => {
+                span.classList.toggle('selected');
+                if (selectedHobbies.has(hobby)) selectedHobbies.delete(hobby);
+                else selectedHobbies.add(hobby);
+            };
+            hobbyContainer.appendChild(span);
+        });
     });
 
-    // 3. 価値観の軸 (3カテゴリー) 感度スライダー生成
-    const slidersContainer = document.getElementById('ethical-sensitivity-sliders');
+    // 3. 価値観スライダー（パラメーター）の描画 - ここを修正！
     ETHICAL_CATEGORIES.forEach(cat => {
+        sensitivityData[cat.id] = 50; // デフォルト値
+        
         const wrapper = document.createElement('div');
-        wrapper.className = 'slider-wrapper';
+        wrapper.className = 'slider-container';
+        
         wrapper.innerHTML = `
             <div class="slider-label">
-                <span class="cat-name">${cat.name}</span>
-                <span class="cat-value" id="val-${cat.id}">感度: 3</span>
+                <span>${cat.name}</span>
+                <span id="val-${cat.id}">50%</span>
             </div>
-            <p class="cat-desc">${cat.desc}</p>
-            <input type="range" class="range-slider" min="1" max="5" value="3" id="range-${cat.id}">
+            <input type="range" class="range-slider" 
+                   min="0" max="100" value="50" 
+                   id="slider-${cat.id}">
         `;
         
         const slider = wrapper.querySelector('input');
-        const valText = wrapper.querySelector('.cat-value');
-        
         slider.oninput = (e) => {
-            state.sensitivity[cat.id] = parseInt(e.target.value);
-            valText.textContent = `感度: ${e.target.value}`;
+            const val = e.target.value;
+            sensitivityData[cat.id] = parseInt(val);
+            wrapper.querySelector(`#val-${cat.id}`).textContent = `${val}%`;
         };
         
-        state.sensitivity[cat.id] = 3;
-        slidersContainer.appendChild(wrapper);
+        sensitivityContainer.appendChild(wrapper);
     });
 
-    // 4. 生成ボタン
-    document.getElementById('btn-generate').onclick = () => {
-        const results = generateEthicalList(state.selectedLifestyles, state.selectedHobbies, state.sensitivity);
+    // リスト生成
+    btnGenerate.onclick = () => {
+        const results = generateEthicalList(
+            Array.from(selectedLifestyles),
+            Array.from(selectedHobbies),
+            sensitivityData
+        );
+
         renderResults(results);
-        document.getElementById('screen-selection').style.display = 'none';
-        document.getElementById('screen-result').style.display = 'block';
+        screenSelection.classList.remove('active');
+        screenResult.classList.add('active');
         window.scrollTo(0, 0);
     };
 
-    /**
-     * 結果の描画 (V2.5: カテゴリー別カタログ表示)
-     */
-    function renderResults(groupedResults) {
-        const container = document.getElementById('result-container');
-        container.innerHTML = '';
+    btnRestart.onclick = () => {
+        screenResult.classList.remove('active');
+        screenSelection.classList.add('active');
+    };
 
-        for (let category in groupedResults) {
-            const products = groupedResults[category];
-            if (products.length === 0) continue;
+    function renderResults(groupedData) {
+        resultContainer.innerHTML = '';
+        
+        if (Object.keys(groupedData).length === 0) {
+            resultContainer.innerHTML = '<p class="brand-message">選択条件に合うエシカル商品が見つかりませんでした。条件を変えてみてください。</p>';
+            return;
+        }
 
-            const block = document.createElement('div');
-            block.className = 'category-block';
+        for (const [category, products] of Object.entries(groupedData)) {
+            const section = document.createElement('div');
+            section.className = 'category-block';
+            section.innerHTML = `<h3 class="category-title">${category}</h3>`;
             
-            const title = document.createElement('h3');
-            title.className = 'category-title';
-            title.textContent = category;
-            block.appendChild(title);
-
             const grid = document.createElement('div');
-            grid.className = 'results-grid';
+            grid.className = 'results-grid'; // CSSに合わせる
 
-            products.forEach(item => {
+            products.forEach(p => {
                 const card = document.createElement('a');
-                card.href = item.url;
-                card.target = '_blank';
                 card.className = 'result-card';
+                card.href = p.url;
+                card.target = "_blank";
                 card.innerHTML = `
-                    <div class="product-label">${item.brand}</div>
-                    <div class="product-name">${item.name}</div>
-                    <div class="ethical-reason">${item.reason}</div>
-                    <div class="buy-badge">SHOP NOW</div>
+                    <div class="product-label">${p.brand}</div>
+                    <div class="product-name">${p.name}</div>
+                    <div class="ethical-reason">${p.reason}</div>
                 `;
                 grid.appendChild(card);
             });
-
-            block.appendChild(grid);
-            container.appendChild(block);
+            
+            section.appendChild(grid);
+            resultContainer.appendChild(section);
         }
     }
-
-    // 再スタートボタン
-    document.getElementById('btn-restart').onclick = () => {
-        document.getElementById('screen-result').style.display = 'none';
-        document.getElementById('screen-selection').style.display = 'block';
-        window.scrollTo(0, 0);
-    };
 });
